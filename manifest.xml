@@ -1,0 +1,20 @@
+<package>
+  <description brief="Sonar-based Slam using the Sum-of-Gaussian-Filter">
+  
+  </description>
+  <author>Fabio Zachert/fzachert@tzi.de</author>
+  <license></license>
+  <url>http://</url>
+  <logo>http://</logo>
+  <depend package="base/cmake" />
+  <!--
+   To add any dependencies use the depend tag
+  <depend package="dummy-dependency-0" />
+	...
+  <depend package="dummy-dependency-n-1" />
+  <depend package="dummy-dependency-n" />
+  -->
+  <depend package="auv_avalon/sonar_sog_slam" />
+  <depend package="auv_avalon/sonar_image_feature_extractor" />
+  <depend package="base/types" />
+</package>

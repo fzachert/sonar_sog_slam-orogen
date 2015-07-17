@@ -1,0 +1,51 @@
+name "sonar_sog_slam"
+
+using_library "sonar_sog_slam"
+using_library "sonar_image_feature_extractor"
+
+import_types_from "base"
+import_types_from "sonar_sog_slam/types/model_config.hpp"
+import_types_from "sonar_sog_slam/types/filter_config.hpp"
+import_types_from "sonar_sog_slam/maps/sog_map.hpp"
+import_types_from "sonar_image_feature_extractor/DetectorTypes.hpp"
+
+task_context "Task" do
+  
+  input_port("velocity_samples", "base/samples/RigidBodyState")
+  
+  input_port("orientation_samples", "base/samples/RigidBodyState")
+  
+  input_port("depth_samples", "base/samples/RigidBodyState")
+  
+  input_port("sonar_samples", "sonar_image_feature_extractor/SonarFeatures")
+  
+  input_port("global_reference", "base/samples/RigidBodyState")
+  
+  
+  output_port("dead_reackoning_samples", "base/samples/RigidBodyState")
+  
+  output_port("pose_samples", "base/samples/RigidBodyState")
+  
+  output_port("map_samples", "sonar_sog_slam/SOG_Map")
+  
+  
+  
+  property("model_config", "sonar_sog_slam/ModelConfig")
+  property("filter_config", "sonar_sog_slam/FilterConfig")
+  
+  property("timeout", "double", 5.0)
+  
+  stream_aligner do
+      max_latency 1.0
+      align_port "velocity_samples", 0.1
+      align_port "orientation_samples", 0.01
+      align_port "depth_samples", 0.1
+      align_port "sonar_samples", 0.1
+  end
+  
+  periodic 1.0
+  
+  runtime_states "LOCALIZING", "NO_ORIENTATION", "NO_SONAR", "NO_DEPTH", "NO_VELOCITY"
+
+end
+
