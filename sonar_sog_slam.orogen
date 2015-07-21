@@ -6,6 +6,7 @@ using_library "sonar_image_feature_extractor"
 import_types_from "base"
 import_types_from "sonar_sog_slam/types/model_config.hpp"
 import_types_from "sonar_sog_slam/types/filter_config.hpp"
+import_types_from "sonar_sog_slam/types/debug_types.hpp"
 import_types_from "sonar_sog_slam/maps/sog_map.hpp"
 import_types_from "sonar_image_feature_extractor/DetectorTypes.hpp"
 
@@ -28,7 +29,7 @@ task_context "Task" do
   
   output_port("map_samples", "sonar_sog_slam/SOG_Map")
   
-  
+  output_port("debug_output", "sonar_sog_slam/DebugOutput")
   
   property("model_config", "sonar_sog_slam/ModelConfig")
   property("filter_config", "sonar_sog_slam/FilterConfig")

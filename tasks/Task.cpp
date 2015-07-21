@@ -28,17 +28,29 @@ bool Task::configureHook()
 {
     if (! TaskBase::configureHook())
         return false;
+    
     return true;
 }
 bool Task::startHook()
 {
     if (! TaskBase::startHook())
         return false;
+    
+    model_config = _model_config.get();
+    filter_config = _filter_config.get();
+    
+    sog_slam.init(filter_config, model_config);
+    
     return true;
 }
 void Task::updateHook()
 {
     TaskBase::updateHook();
+    
+    
+    _map_samples.write( sog_slam.getMap() );
+    _debug_output.write( sog_slam.getDebug() );
+    
 }
 
 void Task::stopHook()
