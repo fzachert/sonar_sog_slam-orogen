@@ -1,0 +1,62 @@
+--- name:default
+svm_config:
+  svm_path: config/svm.sav
+  svm_type: :C_SVC
+  kernel_type: :RBF
+  kernel_degree: 5
+  rbf_gamma: 32.0
+  coef0: 1.0
+  use_moments: true
+  learn: false
+  cache_size: 10.0
+  stopping_eps: 0.001
+  C: 16.0
+  nu: 0.0
+  weights: []
+  weight_labels: []
+  use_shrinking: 1
+  use_probability: 0
+  cross_validation: true
+  number_of_folds: 10
+  start_gamma_exp: -5
+  end_gamma_exp: 15
+  start_C_exp: -5
+  end_C_exp: 15
+  scales:
+  - offset: -0.016000000000000014
+    scalling: 0.19531249999999997
+  - offset: -0.006868839461631637
+    scalling: 1.2688152317824328
+  - offset: -0.029141825894912356
+    scalling: 1.4819189941181212
+  - offset: -0.6193443401023834
+    scalling: 0.03121400083441129
+  - offset: -1.784
+    scalling: 0.07050197405527354
+  - offset: -333.0
+    scalling: 2.0599146783340233e-06
+  - offset: -1.683490623562087e-05
+    scalling: 0.6290175891219085
+  - offset: 5.070206194209863
+    scalling: 0.19723082862024593
+  - offset: -1.1657159792983622e-06
+    scalling: 0.06184300250179992
+  - offset: 0.053526293833058215
+    scalling: 10.429101219179373
+  - offset: 0.09077790670092882
+    scalling: 6.385955407144173
+  - offset: 0.11349298216254629
+    scalling: 2.5667047914271794
+  - offset: -0.0
+    scalling: 12.707445619190596
+  - offset: 0.038698127526677666
+    scalling: 25.841043583067975
+  - offset: -0.0
+    scalling: 21.447187253890828
+  - offset: 0.008929322672842207
+    scalling: 13.173404856741715
+  - offset: 0.03233795578657434
+    scalling: 25.88152286967981
+  - offset: -0.0
+    scalling: 17.53364253264106
+

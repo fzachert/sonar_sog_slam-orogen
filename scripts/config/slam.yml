@@ -1,0 +1,73 @@
+--- name:default
+# maximum latency, in seconds, of the stream aligner. The aligner will start dropping samples if the difference between the last output and last input is greater than this
+aggregator_max_latency: 1.0
+# minimum time, in s, between two sequential samples arrive on depth_samples
+depth_samples_period: 0.1
+# no documentation available for this property
+filter_config:
+  speed_covariance:
+    data:
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  orientation_drift_variance: 0.0
+  sigmaZ:
+    data:
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  number_of_particles: 0
+  number_of_gaussians: 0
+  K: 0.0
+  new_feature_probability: 0.0
+  sonar_weight: 0.0
+  effective_sample_size_threshold: 0.0
+  use_markov: false
+# no documentation available for this property
+metadata:
+  metadata: []
+  properties: []
+  input_ports: []
+  output_ports: []
+# no documentation available for this property
+model_config:
+  sigmaZ:
+    data:
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  negative_likelihood: 0.0
+  sonar_pos:
+    data:
+    - 0.0
+    - 0.0
+    - 0.0
+  sonar_vertical_angle: 0.0
+  vertical_opening_angle: 0.0
+  max_range: 0.0
+  horizontal_opening_angle: 0.0
+  candidate_threshold: 0
+  candidate_distance: 0.0
+# minimum time, in s, between two sequential samples arrive on orientation_samples
+orientation_samples_period: 0.01
+# minimum time, in s, between two sequential samples arrive on sonar_samples
+sonar_samples_period: 0.1
+# minimum system time in s between two status readings
+stream_aligner_status_period: 1.0
+# no documentation available for this property
+timeout: 5.0
+# minimum time, in s, between two sequential samples arrive on velocity_samples
+velocity_samples_period: 0.1
