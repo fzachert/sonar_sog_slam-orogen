@@ -1,5 +1,6 @@
 name "sonar_sog_slam"
 
+using_library "uw_localization"
 using_library "sonar_sog_slam"
 using_library "sonar_image_feature_extractor"
 
@@ -9,6 +10,7 @@ import_types_from "sonar_sog_slam/types/filter_config.hpp"
 import_types_from "sonar_sog_slam/types/debug_types.hpp"
 import_types_from "sonar_sog_slam/maps/sog_map.hpp"
 import_types_from "sonar_image_feature_extractor/DetectorTypes.hpp"
+import_types_from "uw_localization/types/particle.hpp"
 
 task_context "Task" do
   
@@ -28,6 +30,8 @@ task_context "Task" do
   output_port("pose_samples", "base/samples/RigidBodyState")
   
   output_port("map_samples", "sonar_sog_slam/SOG_Map")
+  
+  output_port("particles", "uw_localization/ParticleSet")
   
   output_port("debug_output", "sonar_sog_slam/DebugOutput")
   
