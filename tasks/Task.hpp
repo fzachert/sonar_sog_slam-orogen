@@ -21,12 +21,16 @@ namespace sonar_sog_slam {
       SOG_Slam sog_slam;
       FilterConfig filter_config;
       ModelConfig model_config;
+      base::samples::RigidBodyState rbs_out, rbs_dead_reackoning;
       
       base::Time last_orientation_sample;
       base::Time last_sonar_sample;
       base::Time last_depth_sample;
       base::Time last_velocity_sample;
       base::Time last_sample;
+      bool got_initial_feature;
+      bool got_initial_groundtruth;
+      base::Vector2d coordinate_transformation;
     
       bool state_machine();
       void change_state( States s);
@@ -57,7 +61,9 @@ namespace sonar_sog_slam {
         virtual void sonar_samplesCallback(const base::Time &ts, const ::sonar_image_feature_extractor::SonarFeatures &sonar_samples_sample);
 
         virtual void velocity_samplesCallback(const base::Time &ts, const ::base::samples::RigidBodyState &velocity_samples_sample);	
-			
+	
+	virtual void initial_groundtruthCallback(const base::Time &ts, const ::base::samples::RigidBodyState &initial_groundtruth_sample);
+	
     };
 }
 

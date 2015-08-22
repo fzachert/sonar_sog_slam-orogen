@@ -1,0 +1,37 @@
+--- name:default
+# no documentation available for this property
+svm_config:
+  svm_path: config/svm_without_moments.sav
+  svm_type: :C_SVC
+  kernel_type: :RBF
+  kernel_degree: 5
+  rbf_gamma: 128.0
+  coef0: 1.0
+  use_moments: false
+  learn: false
+  cache_size: 10.0
+  stopping_eps: 0.001
+  C: 8.0
+  nu: 0.0
+  weights: []
+  weight_labels: []
+  use_shrinking: 1
+  use_probability: 0
+  cross_validation: true
+  number_of_folds: 10
+  start_gamma_exp: -5
+  end_gamma_exp: 15
+  start_C_exp: -5
+  end_C_exp: 15
+  scales:
+  - offset: -0.016000000000000014
+    scalling: 0.19531249999999997
+  - offset: -0.006868839461631637
+    scalling: 1.2688152317824328
+  - offset: -0.029141825894912356
+    scalling: 1.4819189941181212
+  - offset: -0.6193443401023834
+    scalling: 0.03121400083441129
+  - offset: -1.784
+    scalling: 0.07050197405527354
+

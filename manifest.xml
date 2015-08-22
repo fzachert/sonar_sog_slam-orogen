@@ -17,4 +17,5 @@
   <depend package="auv_avalon/sonar_sog_slam" />
   <depend package="auv_avalon/sonar_image_feature_extractor" />
   <depend package="base/types" />
+  <tags>needs_opt</tags>
 </package>

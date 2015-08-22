@@ -9,6 +9,7 @@ import_types_from "sonar_sog_slam/types/model_config.hpp"
 import_types_from "sonar_sog_slam/types/filter_config.hpp"
 import_types_from "sonar_sog_slam/types/debug_types.hpp"
 import_types_from "sonar_sog_slam/maps/sog_map.hpp"
+import_types_from "sonar_sog_slam/sonar_sog_slamTypes.hpp"
 import_types_from "sonar_image_feature_extractor/DetectorTypes.hpp"
 import_types_from "uw_localization/types/particle.hpp"
 
@@ -24,6 +25,7 @@ task_context "Task" do
   
   input_port("global_reference", "base/samples/RigidBodyState")
   
+  input_port("initial_groundtruth", "base/samples/RigidBodyState")
   
   output_port("dead_reackoning_samples", "base/samples/RigidBodyState")
   
@@ -46,11 +48,47 @@ task_context "Task" do
       align_port "orientation_samples", 0.01
       align_port "depth_samples", 0.1
       align_port "sonar_samples", 0.1
+      align_port "initial_groundtruth", 0.1
   end
   
   periodic 1.0
   
-  runtime_states "LOCALIZING", "NO_ORIENTATION", "NO_SONAR", "NO_DEPTH", "NO_VELOCITY"
+  runtime_states "LOCALIZING", "LOCALIZING_WITH_REFERENCE", "NO_ORIENTATION", "NO_SONAR", "NO_DEPTH", "NO_VELOCITY", "NO_INITIAL_FEATURE"
 
 end
+
+task_context "Evaluation" do
+
+  input_port("slam_position", "base/samples/RigidBodyState").
+  doc("Position-output of the slam-algorithm")
+  
+  input_port("dead_reackoning_position", "base/samples/RigidBodyState").
+  doc("Position-output of the dead_reackoning")
+  
+  input_port("groundtruth_position", "base/samples/RigidBodyState").
+  doc("groundtruth-position from external positioning-system")
+  
+  input_port("map_samples", "sonar_sog_slam/SOG_Map")
+  
+  output_port("eval_data", "sonar_sog_slam/EvaluationData")
+  
+  property("real_features", "sonar_sog_slam/GroundtruthMap").
+  doc("List with all known features")
+  
+  property("groundtruth_variance_threshold", "double", 10)
+  
+  property("timediff_tolerance", "double", 0.5)
+  
+  stream_aligner do
+     max_latency 1.0
+     align_port "slam_position", 0.1
+     align_port "dead_reackoning_position", 0.1
+     align_port "groundtruth_position", 0.1
+  end
+   
+  periodic 1.0
+  
+end
+  
+
 
