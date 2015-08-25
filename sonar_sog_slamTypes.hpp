@@ -33,7 +33,11 @@ namespace sonar_sog_slam {
     double position_diff;
     double dead_reackoning_diff;
     double position_variance;
-    double map_error;    
+    double max_error;
+    double dead_reackoning_variance;
+    double map_error;
+
+    int number_of_measurements;    
     
   };
   

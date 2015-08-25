@@ -30,6 +30,9 @@ namespace sonar_sog_slam {
 	GroundtruthMap real_features;
 	double position_diff;
 	
+	double sum_square_error;
+	double sum_square_error_dead_reackoning;
+	
 	EvaluationData eval_data;
         
       

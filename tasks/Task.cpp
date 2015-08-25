@@ -54,12 +54,15 @@ void Task::updateHook()
 {
     TaskBase::updateHook();
     
+     base::Vector3d map_transformation = base::Vector3d::Zero();
+     map_transformation.block<2,1>(0,0) = coordinate_transformation;
+    _map_samples.write( sog_slam.get_map( map_transformation ) );
     
-    _map_samples.write( sog_slam.get_map() );
      DebugOutput d_out = sog_slam.get_debug();
 //     std::cout << "Write init feature like. : " << d_out.initial_feature_likelihood << std::endl;
     _debug_output.write( d_out);
-    _particles.write(sog_slam.getParticleSet() );
+    
+    _particles.write(sog_slam.getParticleSet( map_transformation) );
     
     state_machine();
 }

@@ -34,6 +34,17 @@ void Evaluation::slam_positionCallback(const base::Time &ts, const ::base::sampl
   if( std::fabs( ts.toSeconds() - groundtruth.time.toSeconds() ) < _timediff_tolerance.get()){
     
     eval_data.position_diff = (groundtruth.position.block<2,1>(0,0) - slam_position_sample.position.block<2,1>(0,0)).norm();
+    sum_square_error += std::pow(eval_data.position_diff, 2.0); 
+    
+    if(eval_data.position_diff > eval_data.max_error)
+      eval_data.max_error = eval_data.position_diff;
+    
+    eval_data.number_of_measurements++;
+    eval_data.position_variance += ( 1.0 / (double)eval_data.number_of_measurements)
+      * ( std::pow(eval_data.position_diff,2.0) - eval_data.position_variance );
+      
+    eval_data.dead_reackoning_variance += ( 1.0 / (double)eval_data.number_of_measurements)
+      * (std::pow(eval_data.dead_reackoning_diff,2.0) - eval_data.dead_reackoning_variance );
     
     _eval_data.write(eval_data);
   }
@@ -68,6 +79,19 @@ bool Evaluation::startHook()
 {
     if (! EvaluationBase::startHook())
         return false;
+    
+    sum_square_error = 0.0;
+    sum_square_error_dead_reackoning = 0.0;
+    
+    eval_data.max_error = 0.0;
+    eval_data.number_of_measurements = 0;
+    
+    eval_data.position_diff = 0.0;
+    eval_data.dead_reackoning_diff = 0.0;
+    
+    eval_data.position_variance = 0.0;
+    eval_data.dead_reackoning_variance = 0.0;
+    
     return true;
 }
 void Evaluation::updateHook()
