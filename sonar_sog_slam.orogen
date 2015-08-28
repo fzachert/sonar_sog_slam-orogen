@@ -72,6 +72,10 @@ task_context "Evaluation" do
   
   output_port("eval_data", "sonar_sog_slam/EvaluationData")
   
+  output_port("groundtruth_samples", "base/samples/RigidBodyState")
+  
+  output_port("groundtruth_map", "sonar_sog_slam/SOG_Map")
+  
   property("real_features", "sonar_sog_slam/GroundtruthMap").
   doc("List with all known features")
   

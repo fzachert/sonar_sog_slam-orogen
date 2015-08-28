@@ -28,6 +28,7 @@ namespace sonar_sog_slam {
 
         base::samples::RigidBodyState groundtruth;
 	GroundtruthMap real_features;
+	SOG_Map gt_map;
 	double position_diff;
 	
 	double sum_square_error;

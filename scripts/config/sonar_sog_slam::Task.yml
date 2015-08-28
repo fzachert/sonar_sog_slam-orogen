@@ -5,35 +5,43 @@ aggregator_max_latency: 7.0
 depth_samples_period: 0.1
 # no documentation available for this property
 filter_config:
-  speed_covariance:
-    data:
-    - 0.001
-    - 0.0
-    - 0.0
-    - 0.001
-  orientation_drift_variance: 0.00000001
-  number_of_particles: 1000
+  number_of_particles: 2000
   number_of_gaussians: 5
   K: 0.5
-  new_feature_distance: 1.0
+  new_feature_distance: 2.5
+  feature_penalty: 0.1
   sonar_weight: 1.0
-  effective_sample_size_threshold: 0.5
+  effective_sample_size_threshold: 0.03
   min_observations: 3
   use_markov: false
   estimate_middle: true
+  candidate_threshold: 5
+  candidate_distance: 0.5
+  heuristic_tolerance: 5.0
+  reduction_weight_threshold: 0.02
+  reduction_distance_threshold: 0.1
+  reduction_trigger_probability: 0.3
+  merge_distance_threshold: 1.5  
 # no documentation available for this property
 model_config:
   sigmaZ:
     data:
-    - 0.04
-    - 0.0
-    - 0.0
-    - 0.0
-    - 0.007
+    - 0.1
     - 0.0
     - 0.0
     - 0.0
     - 0.01
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.01
+  speed_covariance:
+    data:
+    - 0.0002
+    - 0.0
+    - 0.0
+    - 0.0002
+  orientation_drift_variance: 0.00000001    
   negative_likelihood: 0.7
   sonar_pos:
     data:
@@ -50,13 +58,6 @@ model_config:
   vertical_opening_angle: 0.1745
   max_range: 8.5
   horizontal_opening_angle: 1.05
-  candidate_threshold: 5
-  candidate_distance: 0.5
-  heuristic_tolerance: 5.0
-  reduction_weight_threshold: 0.02
-  reduction_distance_threshold: 0.1
-  reduction_trigger_probability: 0.3
-  merge_distance_threshold: 1.0
 initial_groundtruth_period: 0.001  
 # minimum time, in s, between two sequential samples arrive on orientation_samples
 orientation_samples_period: 0.003

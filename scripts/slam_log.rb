@@ -65,12 +65,13 @@ Orocos.run "sonar_image_feature_extractor::SonarBeamProcessing" =>"sife", "gemin
   log.dvl_seapilot.velocity_samples.connect_to slam.velocity_samples
   log.orientation_in_map.orientation_in_map.connect_to slam.orientation_samples, :type => :buffer, :size => 100
   log.pressure_sensor.depth_samples.connect_to slam.depth_samples
-  log.uw_particle_localization.pose_samples.connect_to slam.initial_groundtruth, :type => :buffer, :size => 100
+  log.pose_estimator.pose_samples.connect_to slam.initial_groundtruth, :type => :buffer, :size => 100
   sife.detected_buoy.connect_to slam.sonar_samples
   
   slam.pose_samples.connect_to evaluation.slam_position, :type => :buffer, :size => 100
   slam.dead_reackoning_samples.connect_to evaluation.dead_reackoning_position, :type => :buffer, :size => 10
-  log.uw_particle_localization.pose_samples.connect_to evaluation.groundtruth_position, :type => :buffer, :size => 100
+  log.pose_estimator.pose_samples.connect_to evaluation.groundtruth_position, :type => :buffer, :size => 100
+  slam.map_samples.connect_to evaluation.map_samples, :type => :buffer, :size => 10
   
   evaluation.configure
   evaluation.start
@@ -78,9 +79,15 @@ Orocos.run "sonar_image_feature_extractor::SonarBeamProcessing" =>"sife", "gemin
   slam.configure
   slam.start
   
-  Vizkit.display sife
+#  Vizkit.display sife
   Vizkit.display slam
   Vizkit.display evaluation
+  
+#   Vizkit.display slam.particles
+#   Vizkit.display slam.dead_reackoning_samples
+#   Vizkit.display slam.pose_samples
+#   Vizkit.display slam.map_samples
+  
 #  Vizkit.display gem
   Vizkit.control log
   Vizkit.exec

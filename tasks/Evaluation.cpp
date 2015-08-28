@@ -26,12 +26,16 @@ void Evaluation::groundtruth_positionCallback(const base::Time &ts, const ::base
    groundtruth = groundtruth_position_sample;
   }
   
+  _groundtruth_samples.write(groundtruth_position_sample);
+  
 }
 
 void Evaluation::slam_positionCallback(const base::Time &ts, const ::base::samples::RigidBodyState &slam_position_sample)
 {
     
   if( std::fabs( ts.toSeconds() - groundtruth.time.toSeconds() ) < _timediff_tolerance.get()){
+    
+    eval_data.time = ts;
     
     eval_data.position_diff = (groundtruth.position.block<2,1>(0,0) - slam_position_sample.position.block<2,1>(0,0)).norm();
     sum_square_error += std::pow(eval_data.position_diff, 2.0); 
@@ -56,6 +60,8 @@ void Evaluation::dead_reackoning_positionCallback(const base::Time &ts, const ::
 {
 
   if( std::fabs( ts.toSeconds() - groundtruth.time.toSeconds() ) < _timediff_tolerance.get()){
+    
+    eval_data.time = ts;
     
     eval_data.dead_reackoning_diff = (groundtruth.position.block<2,1>(0,0) - dead_reackoning_position_sample.position.block<2,1>(0,0)).norm();
     
@@ -92,11 +98,85 @@ bool Evaluation::startHook()
     eval_data.position_variance = 0.0;
     eval_data.dead_reackoning_variance = 0.0;
     
+    real_features = _real_features.get();
+    
+    gt_map.features.clear();
+    for(std::vector<GroundtruthFeature>::iterator it = real_features.features.begin(); it != real_features.features.end(); it++){
+      
+      Simple_Feature sf;
+      sf.pos = it->pos;
+      sf.descriptor = 3;
+      
+      gt_map.simple_features.push_back(sf);
+      
+    }
+    
+    
     return true;
 }
 void Evaluation::updateHook()
 {
     EvaluationBase::updateHook();
+    
+    SOG_Map map;
+    
+    while( _map_samples.read(map) == RTT::NewData){
+      
+      for(std::vector<GroundtruthFeature>::iterator it = real_features.features.begin(); it != real_features.features.end(); it++){
+	
+	it->flag = false;
+      }
+      
+      
+      eval_data.map_eval.number_of_features_without_gt = 0;
+      eval_data.map_eval.number_of_missing_features = real_features.features.size();
+      eval_data.map_eval.map_variance = 0.0;
+      
+      for(std::vector<Simple_Feature>::iterator it = map.simple_features.begin(); it != map.simple_features.end(); it++){
+	
+	double min_dist = real_features.tolerance;
+	std::vector<GroundtruthFeature>::iterator min_it;
+	
+	for(std::vector<GroundtruthFeature>::iterator it_gt = real_features.features.begin(); it_gt != real_features.features.end(); it_gt++){
+	  
+	  if(!it_gt->flag){
+	    double dist = ( it_gt->pos - it->pos).norm();
+	    
+	    if( dist < min_dist){
+	      
+	      min_dist = dist;
+	      min_it = it_gt;
+	      
+	    }	      
+	    
+	  }
+	  
+	}	
+	
+	if( min_dist < real_features.tolerance){
+	  min_it->flag = true;
+	  eval_data.map_eval.number_of_missing_features--;
+	  eval_data.map_eval.map_variance += std::pow( min_dist, 2.0);
+	  
+	}else{
+	  
+	  eval_data.map_eval.number_of_features_without_gt++;
+	  
+	}
+	
+	
+      }     
+      
+      if(real_features.features.size() > 0){
+	eval_data.map_eval.map_variance /= (double)real_features.features.size();
+      }
+      
+      gt_map.time = map.time;
+      _groundtruth_map.write( gt_map);
+      
+    }
+    
+    
 }
 void Evaluation::errorHook()
 {

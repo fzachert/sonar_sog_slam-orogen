@@ -96,15 +96,19 @@ void Task::orientation_samplesCallback(const base::Time &ts, const ::base::sampl
     sog_slam.set_time( ts);
   }
     
-    if(filter_config.estimate_middle)
-      rbs_out = sog_slam.estimate_middle();
-    else
-      rbs_out = sog_slam.estimate();
+    if( _initial_groundtruth.connected() && got_initial_groundtruth){
+      
+      if(filter_config.estimate_middle)
+	rbs_out = sog_slam.estimate_middle();
+      else
+	rbs_out = sog_slam.estimate();
+      
+      
+      rbs_out.position.block<2,1>(0,0) += coordinate_transformation;
+      _pose_samples.write( rbs_out);
     
-    
-    rbs_out.position.block<2,1>(0,0) += coordinate_transformation;
-    _pose_samples.write( rbs_out);
-    
+    }
+      
 }
 
 void Task::sonar_samplesCallback(const base::Time &ts, const ::sonar_image_feature_extractor::SonarFeatures &sonar_samples_sample)
@@ -144,8 +148,7 @@ void Task::velocity_samplesCallback(const base::Time &ts, const ::base::samples:
 	rbs_dead_reackoning = sog_slam.estimate_dead_reackoning();
 	
 	rbs_dead_reackoning.position.block<2,1>(0,0) += coordinate_transformation;
-	_dead_reackoning_samples.write( rbs_dead_reackoning);	
-	
+	_dead_reackoning_samples.write( rbs_dead_reackoning);
 	
       }
       
