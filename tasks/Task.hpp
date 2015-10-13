@@ -8,6 +8,7 @@
 #include <sonar_sog_slam/maps/sog_map.hpp>
 #include <sonar_sog_slam/types/filter_config.hpp>
 #include <sonar_sog_slam/types/model_config.hpp>
+#include <sonar_sog_slam/types/dvl_dropout.hpp>
 #include <base/samples/RigidBodyState.hpp>
 #include <base/Time.hpp>
 
@@ -31,6 +32,7 @@ namespace sonar_sog_slam {
       bool got_initial_feature;
       bool got_initial_groundtruth;
       base::Vector2d coordinate_transformation;
+      base::Vector3d angular_velocity;
     
       bool state_machine();
       void change_state( States s);
@@ -63,6 +65,8 @@ namespace sonar_sog_slam {
         virtual void velocity_samplesCallback(const base::Time &ts, const ::base::samples::RigidBodyState &velocity_samples_sample);	
 	
 	virtual void initial_groundtruthCallback(const base::Time &ts, const ::base::samples::RigidBodyState &initial_groundtruth_sample);
+	
+	virtual void global_referenceCallback(const base::Time &ts, const ::base::samples::RigidBodyState &rbs);
 	
     };
 }

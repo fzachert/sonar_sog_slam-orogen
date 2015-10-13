@@ -43,6 +43,7 @@ bool Task::startHook()
     got_initial_groundtruth = false;
     coordinate_transformation = base::Vector2d::Zero();
     rbs_out.position = base::Vector3d::Zero();
+    angular_velocity = base::Vector3d::Zero();
     
     sog_slam.init(filter_config, model_config);
     
@@ -92,6 +93,7 @@ void Task::orientation_samplesCallback(const base::Time &ts, const ::base::sampl
     last_orientation_sample = ts;
     last_sample = ts;
     
+    angular_velocity = orientation_samples_sample.angular_velocity;
     sog_slam.set_orientation( orientation_samples_sample.orientation);
     sog_slam.set_time( ts);
   }
@@ -134,22 +136,32 @@ void Task::sonar_samplesCallback(const base::Time &ts, const ::sonar_image_featu
 
 void Task::velocity_samplesCallback(const base::Time &ts, const ::base::samples::RigidBodyState &velocity_samples_sample)
 {
+    base::samples::RigidBodyState rbs_copy = velocity_samples_sample;
   
-    if( velocity_samples_sample.hasValidVelocity()){
+    if( rbs_copy.hasValidVelocity()){
     
       last_velocity_sample = ts;
       last_sample = ts;
+      rbs_copy.angular_velocity = angular_velocity;
       
       if( state_machine() && got_initial_feature){
 	
-	sog_slam.update( velocity_samples_sample, DummyMap());
-	sog_slam.update_dead_reackoning( velocity_samples_sample);
+	sog_slam.update( rbs_copy, DummyMap());
+	sog_slam.update_dead_reackoning( rbs_copy);
 	
 	rbs_dead_reackoning = sog_slam.estimate_dead_reackoning();
 	
 	rbs_dead_reackoning.position.block<2,1>(0,0) += coordinate_transformation;
 	_dead_reackoning_samples.write( rbs_dead_reackoning);
 	
+      }
+      
+    }else{
+      DvlDropoutSample dds;
+      dds.time = ts;
+      
+      if( state_machine() && got_initial_feature){
+	sog_slam.update( dds, DummyMap() );
       }
       
     }
@@ -166,6 +178,23 @@ void Task::initial_groundtruthCallback(const base::Time &ts, const ::base::sampl
     
   }
   
+}
+
+void Task::global_referenceCallback(const base::Time &ts, const ::base::samples::RigidBodyState &rbs){
+  
+  double neff;
+  DummyMap m;
+  
+  if(filter_config.use_markov){
+    neff = sog_slam.observe_markov(rbs, m, filter_config.sonar_weight);
+  }else{
+    neff = sog_slam.observe(rbs, m, filter_config.sonar_weight);
+  }
+  
+  if( neff < filter_config.effective_sample_size_threshold)
+  {
+    sog_slam.resample();
+  }
 }
 
 bool Task::state_machine(){

@@ -49,6 +49,7 @@ task_context "Task" do
       align_port "depth_samples", 0.1
       align_port "sonar_samples", 0.1
       align_port "initial_groundtruth", 0.1
+      align_port "global_reference", 0.1
   end
   
   periodic 1.0
@@ -73,6 +74,7 @@ task_context "Evaluation" do
   output_port("eval_data", "sonar_sog_slam/EvaluationData")
   
   output_port("groundtruth_samples", "base/samples/RigidBodyState")
+  output_port("slam_samples", "base/samples/RigidBodyState")
   
   output_port("groundtruth_map", "sonar_sog_slam/SOG_Map")
   
@@ -82,6 +84,11 @@ task_context "Evaluation" do
   property("groundtruth_variance_threshold", "double", 10)
   
   property("timediff_tolerance", "double", 0.5)
+  
+  property("dimension_scalling", "base/Vector3d")
+  property("dimension_offset", "base/Vector3d")
+  
+  property("downsample_intervall", "double", 1.0)
   
   stream_aligner do
      max_latency 1.0
