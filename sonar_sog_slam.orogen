@@ -1,7 +1,7 @@
 name "sonar_sog_slam"
 
 using_library "uw_localization"
-using_library "sonar_sog_slam"
+#using_library "sonar_sog_slam"
 using_library "sonar_image_feature_extractor"
 
 import_types_from "base"
@@ -42,6 +42,9 @@ task_context "Task" do
   
   property("timeout", "double", 5.0)
   
+  property("zero_velocity", "bool", false).
+  doc("Debug-Flag.Set all input-velocity to zero.")
+  
   stream_aligner do
       max_latency 1.0
       align_port "velocity_samples", 0.1
@@ -77,6 +80,8 @@ task_context "Evaluation" do
   output_port("slam_samples", "base/samples/RigidBodyState")
   
   output_port("groundtruth_map", "sonar_sog_slam/SOG_Map")
+  
+  output_port("pitch_samples", "sonar_sog_slam/PitchSample")
   
   property("real_features", "sonar_sog_slam/GroundtruthMap").
   doc("List with all known features")

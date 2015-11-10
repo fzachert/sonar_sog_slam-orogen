@@ -33,6 +33,8 @@ namespace sonar_sog_slam {
   
   struct MapEvaluation{
     double map_variance;
+    double map_depth_variance;
+    int number_of_features_with_correspondence;
     int number_of_missing_features;
     int number_of_features_without_gt;
     
@@ -53,6 +55,11 @@ namespace sonar_sog_slam {
 
     MapEvaluation map_eval;    
     
+  };
+  
+  struct PitchSample{
+    base::Time time;
+    double pitch;
   };
   
 }

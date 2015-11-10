@@ -98,7 +98,7 @@ void Task::orientation_samplesCallback(const base::Time &ts, const ::base::sampl
     sog_slam.set_time( ts);
   }
     
-    if( _initial_groundtruth.connected() && got_initial_groundtruth){
+    if( (!_initial_groundtruth.connected()) || got_initial_groundtruth){
       
       if(filter_config.estimate_middle)
 	rbs_out = sog_slam.estimate_middle();
@@ -138,11 +138,35 @@ void Task::velocity_samplesCallback(const base::Time &ts, const ::base::samples:
 {
     base::samples::RigidBodyState rbs_copy = velocity_samples_sample;
   
-    if( rbs_copy.hasValidVelocity()){
+    if( _zero_velocity.get()){
+      
+      last_velocity_sample = ts;
+      last_sample = ts;
+      rbs_copy.angular_velocity = angular_velocity;
+      rbs_copy.velocity = base::Vector3d::Zero();
+      
+      if( state_machine() && got_initial_feature){
+	sog_slam.update( rbs_copy, DummyMap());
+	sog_slam.update_dead_reackoning( rbs_copy);
+	
+	rbs_dead_reackoning = sog_slam.estimate_dead_reackoning();
+	
+	rbs_dead_reackoning.position.block<2,1>(0,0) += coordinate_transformation;
+	_dead_reackoning_samples.write( rbs_dead_reackoning);	
+      }
+      
+    }else if( rbs_copy.hasValidVelocity()){
     
       last_velocity_sample = ts;
       last_sample = ts;
       rbs_copy.angular_velocity = angular_velocity;
+      
+      if( rbs_copy.velocity.norm() > model_config.max_velocity ){
+	
+	double scale = model_config.max_velocity / rbs_copy.velocity.norm();
+	rbs_copy.velocity *= scale;
+	
+      }
       
       if( state_machine() && got_initial_feature){
 	
